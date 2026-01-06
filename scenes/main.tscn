@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2ixohbcflmm0"]
+
+[ext_resource type="Script" uid="uid://bhavw35ohnwov" path="res://scripts/main.gd" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://scrnpvyrf17w" path="res://scenes/game.tscn" id="2_0wfyh"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_o5qli")
+game_scene = ExtResource("2_0wfyh")
+
+[node name="Start" type="Button" parent="."]
+offset_right = 96.0
+offset_bottom = 31.0
+text = "Start Game"
+
+[node name="Score" type="Button" parent="."]
+visible = false
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Customize" type="Button" parent="."]
+visible = false
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Shop" type="Button" parent="."]
+visible = false
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Setting" type="Button" parent="."]
+visible = false
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Quit" type="Button" parent="."]
+offset_top = 43.0
+offset_right = 42.0
+offset_bottom = 74.0
+text = "Quit"
+
+[connection signal="pressed" from="Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Score" to="." method="_on_score_pressed"]
+[connection signal="pressed" from="Customize" to="." method="_on_customize_pressed"]
+[connection signal="pressed" from="Shop" to="." method="_on_shop_pressed"]
+[connection signal="pressed" from="Setting" to="." method="_on_setting_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
