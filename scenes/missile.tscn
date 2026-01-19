@@ -1,22 +1,68 @@
-[gd_scene load_steps=5 format=3 uid="uid://glo36s8jh80q"]
+[gd_scene load_steps=8 format=3 uid="uid://glo36s8jh80q"]
 
 [ext_resource type="Script" uid="uid://bwppi8175602x" path="res://scripts/missile.gd" id="1_8go28"]
-[ext_resource type="Texture2D" uid="uid://cs75b6jypofpd" path="res://icon.svg" id="2_35udt"]
-[ext_resource type="Texture2D" uid="uid://c72074lr5hx2o" path="res://assets/sprites/Missle.png" id="2_ohnc3"]
+[ext_resource type="Texture2D" uid="uid://bp3kd34jp1a31" path="res://assets/sprites/targeting.png" id="2_35udt"]
+[ext_resource type="Texture2D" uid="uid://cjkjwovvwgjp5" path="res://assets/sprites/ROCKET.png" id="3_35udt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1ifrg"]
+
+[sub_resource type="Animation" id="Animation_35udt"]
+resource_name = "Missle_Flying"
+length = 0.6
+loop_mode = 1
+step = 0.33333334
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Missile:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_2swxv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Missile:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bd00w"]
+_data = {
+&"Missle_Flying": SubResource("Animation_35udt"),
+&"RESET": SubResource("Animation_2swxv")
+}
 
 [node name="Area2D" type="Area2D"]
 script = ExtResource("1_8go28")
 
 [node name="RedCircle" type="Sprite2D" parent="."]
-position = Vector2(-1.0000038, -0.9999962)
-scale = Vector2(0.375, 0.3515625)
 texture = ExtResource("2_35udt")
+hframes = 3
 
 [node name="Missile" type="Sprite2D" parent="."]
-position = Vector2(-2, 4)
-texture = ExtResource("2_ohnc3")
+texture_filter = 1
+texture_repeat = 2
+texture = ExtResource("3_35udt")
+hframes = 3
+vframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1ifrg")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_bd00w")
+}
