@@ -11,6 +11,7 @@ func _ready():
 	
 	var scale = max(scale_x, scale_y)
 	background.scale = Vector2.ONE * scale
+	AdManager.show_banner()
 
 func _on_start_pressed():
 	get_tree().change_scene_to_packed(game_scene)
