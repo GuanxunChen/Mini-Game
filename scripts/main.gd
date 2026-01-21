@@ -1,6 +1,17 @@
 extends Node2D
 @export var game_scene: PackedScene
 
+func _ready():
+	var background = $Background
+	var tex_size = background.texture.get_size()
+	var viewport_size = get_viewport_rect().size
+	
+	var scale_x = viewport_size.x / tex_size.x
+	var scale_y = viewport_size.y / tex_size.y
+	
+	var scale = max(scale_x, scale_y)
+	background.scale = Vector2.ONE * scale
+
 func _on_start_pressed():
 	get_tree().change_scene_to_packed(game_scene)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://glo36s8jh80q"]
+[gd_scene load_steps=9 format=3 uid="uid://glo36s8jh80q"]
 
 [ext_resource type="Script" uid="uid://bwppi8175602x" path="res://scripts/missile.gd" id="1_8go28"]
 [ext_resource type="Texture2D" uid="uid://bp3kd34jp1a31" path="res://assets/sprites/targeting.png" id="2_35udt"]
@@ -25,11 +25,28 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_2swxv"]
+resource_name = "Red_Circle_Enter_Active"
+length = 0.2
+step = 0.33333334
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../RedCircle:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_bd00w"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Missile:frame")
+tracks/0/path = NodePath("../RedCircle:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -42,7 +59,8 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bd00w"]
 _data = {
 &"Missle_Flying": SubResource("Animation_35udt"),
-&"RESET": SubResource("Animation_2swxv")
+&"RESET": SubResource("Animation_bd00w"),
+&"Red_Circle_Enter_Active": SubResource("Animation_2swxv")
 }
 
 [node name="Area2D" type="Area2D"]
@@ -62,7 +80,13 @@ vframes = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1ifrg")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="Missile_Player" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_bd00w")
+}
+
+[node name="Red_Circle_Player" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Missile_Player")
 libraries = {
 &"": SubResource("AnimationLibrary_bd00w")
 }

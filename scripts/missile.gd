@@ -12,7 +12,9 @@ var active_timer := 0.0               # 可击破倒计时
 @onready var missile_sprite := $Missile
 @onready var red_circle := $RedCircle
 @onready var collision_shape := $CollisionShape2D
-@onready var animation_player := $AnimationPlayer
+@onready var missile_player := $Missile_Player
+@onready var red_circle_player := $Red_Circle_Player
+
 func _ready():
 	if missile_sprite == null or red_circle == null:
 		push_error("Missile scene structure incorrect!")
@@ -24,7 +26,7 @@ func _ready():
 	monitoring = true
 	monitorable = true
 	
-	animation_player.play("Missle_Flying")
+	missile_player.play("Missle_Flying")
 #	print("missle:")
 #	print((missile_sprite.texture.get_size().x * missile_sprite.scale.x) * 0.5)
 #	print(missile_sprite.texture.get_size().x)
@@ -82,6 +84,7 @@ func get_sprite_radius(sprite: Sprite2D) -> float:
 
 func enter_active_state():
 	active = true
+	red_circle_player.play("Red_Circle_Enter_Active")
 	active_timer = 0.0
 	#print("Missile ACTIVE (can be destroyed)")
 
@@ -97,3 +100,4 @@ func destroy():
 func explode():
 	emit_signal("exploded", self)
 	queue_free()
+	#get_tree().change_scene_to_file("res://scenes/scoreboard.tscn")
