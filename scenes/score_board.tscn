@@ -1,3 +1,102 @@
-[gd_scene format=3 uid="uid://cvo548cxn6dtf"]
+[gd_scene load_steps=3 format=3 uid="uid://cvo548cxn6dtf"]
+
+[ext_resource type="Script" uid="uid://c61bj3gga3qd1" path="res://scripts/score_board.gd" id="1_ek31y"]
+[ext_resource type="PackedScene" uid="uid://bkyjxjlwtv4f6" path="res://scenes/scoreboardrow.tscn" id="2_gjtyh"]
 
 [node name="ScoreBoard" type="Node2D"]
+script = ExtResource("1_ek31y")
+row_scene = ExtResource("2_gjtyh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 64.0
+offset_top = 24.0
+offset_right = -176.0
+offset_bottom = 712.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer"]
+layout_mode = 2
+
+[node name="score_container" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Top3Container" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container"]
+layout_mode = 2
+
+[node name="Top3" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container"]
+layout_mode = 2
+text = "Top 3:"
+horizontal_alignment = 1
+
+[node name="Number1" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container"]
+layout_mode = 2
+text = "Number1"
+
+[node name="Number2" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container"]
+layout_mode = 2
+text = "Number2"
+
+[node name="Number3" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container"]
+layout_mode = 2
+text = "Number3"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NearbyScores" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer"]
+layout_mode = 2
+text = "Your Ranking:"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="try_again" type="Button" parent="."]
+offset_left = 16.0
+offset_top = 401.0
+offset_right = 97.0
+offset_bottom = 432.0
+text = "Try Again"
+metadata/_edit_use_anchors_ = true
+
+[node name="main_menu" type="Button" parent="."]
+offset_left = 296.0
+offset_top = 401.0
+offset_right = 392.0
+offset_bottom = 432.0
+text = "Main Menu"
+metadata/_edit_use_anchors_ = true
+
+[node name="submit_score" type="Button" parent="."]
+offset_left = 139.0
+offset_top = 400.0
+offset_right = 249.0
+offset_bottom = 431.0
+text = "Submit Score"
+metadata/_edit_use_anchors_ = true

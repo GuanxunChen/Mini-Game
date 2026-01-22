@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkyjxjlwtv4f6"]
+
+[ext_resource type="Script" uid="uid://dnjg6cdead8qy" path="res://scripts/scoreboardrow.gd" id="1_m3ei6"]
+
+[node name="Scoreboardrow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_m3ei6")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 161.0
+offset_bottom = 40.0
+theme_override_constants/separation = 16
+
+[node name="Rank" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Rank"
+
+[node name="Username" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="Score" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Score"
