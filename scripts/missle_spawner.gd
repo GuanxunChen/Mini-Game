@@ -9,7 +9,6 @@ extends Node
 @export var red_zone_radius: float = 50.0      # 红圈大小
 
 var timer := 0.0
-var score := 0
 
 @onready var score_label := $"../Score"
 
@@ -40,10 +39,10 @@ func spawn_missile():
 	missile.connect("exploded", Callable(self, "_on_missile_exploded"))
 
 func _on_missile_destroyed(_missile):
-	score += 1
+	Global.score += 1
 	if score_label:
-		score_label.text = "Score: " + str(score)
-	print("Missile destroyed! Score: ", score)
+		score_label.text = "Score: " + str(Global.score)
+	print("Missile destroyed! Score: ", Global.score)
 
 func _on_missile_exploded(_missile):
 	print("Missile exploded! Game Over!")
