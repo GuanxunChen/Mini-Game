@@ -2,60 +2,149 @@ extends Node2D
 
 @export var row_scene: PackedScene
 
-@onready var top_3_container = $PanelContainer/MainLayout/Top3Container
-@onready var nearby_list = $PanelContainer/MainLayout/NearbySection/ScrollContainer/NearbyPlayersList
-@onready var scroll_container = $PanelContainer/MainLayout/NearbySection/ScrollContainer
+@onready var top_3_container = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container
+@onready var scroll_container = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer
+
+@onready var submit_score_button := $CanvasLayer/submit_score
+@onready var http: HTTPRequest = $HTTPRequest
 
 const WINDOW_SIZE := 25
+var last_request_type := ""
+var score_list := []
 
-func sort_with_ranks(entries: Array) -> Array:
-	entries.sort_custom(func(a, b): return a.score > b.score)
+# 引入 Firebase 配置
+const FirebaseConfig = preload("res://addons/firebase/config.gd")
 
-	var ranked := []
-	var last_score = null
-	var rank := 0
+#临时写死的用户ID
+var user_id := "test_user_003"
 
-	for i in range(entries.size()):
-		if entries[i].score != last_score:
-			rank = i + 1
-			last_score = entries[i].score
+func _ready():
+	http.request_completed.connect(_on_request_completed)
+	fetch_top_scores(10)
 
-		ranked.append({
-			"rank": rank,
-			"name": entries[i].name,
-			"score": entries[i].score,
-			"is_player": entries[i].is_player
-		})
-
-	return ranked
-
-func populate_top_3(ranked: Array):
-	for child in top_3_container.get_children():
-		child.queue_free()
-
-	for i in range(min(3, ranked.size())):
-		var row = row_scene.instantiate()
-		var p = ranked[i]
-		row.set_data(p.rank, p.name, p.score, p.is_player)
-		top_3_container.add_child(row)
-
-func populate_nearby(ranked: Array):
-	for child in nearby_list.get_children():
-		child.queue_free()
-
-	var player_index := ranked.find(
-		ranked.filter(func(p): return p.is_player)[0]
+func _process_leaderboard(raw: Dictionary) -> void:		
+	#dictionary数据转array
+	score_list = []
+	
+	for uid in raw.keys():
+		var e = raw[uid]
+		if e is Dictionary and e.has("score"):
+			score_list.append({
+				"uid": uid,
+				"score": int(e.score),
+				"ts": int(e.get("timestamp", 0))
+			})
+	
+	#分数降序，同分时间早
+	score_list.sort_custom(func(a, b):
+		if a.score == b.score:
+			return a.ts < b.ts
+		return a.score > b.score
 	)
 
-	var start = max(0, player_index - WINDOW_SIZE)
-	var end = min(ranked.size(), player_index + WINDOW_SIZE + 1)
+	#找自己排名
+	var my_index := -1
+	for i in score_list.size():
+		if score_list[i].uid == user_id:
+			my_index = i
+			break
 
-	for i in range(start, end):
-		var p = ranked[i]
-		var row = row_scene.instantiate()
-		row.set_data(p.rank, p.name, p.score, p.is_player)
-		nearby_list.add_child(row)
+	#构造显示文本
+	var top3 = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container/Top3
+	top3.text = "====== TOP 3 ======\n"
+	for i in range(min(3, score_list.size())):
+		var rank_col := ("#%d" % (i + 1)).rpad(9, " ")
+		var name_col := str(score_list[i]["uid"]).substr(0, 16).rpad(16, " ")
+		var score_col := str(score_list[i]["score"]).lpad(5, " ")
+		top3.text+=rank_col+name_col+score_col+"\n"
 
-		if p.is_player:
-			await get_tree().process_frame
-			scroll_container.scroll_vertical = row.position.y
+	var nearbyscores = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer/VBoxContainer/NearbyScores
+	if my_index == -1:
+		nearbyscores.text =("Player not ranked yet\n")
+	else:
+		nearbyscores.text =("====== AROUND YOU ======\n")
+
+		var start = max(my_index - 100, 0)
+		var end = min(my_index + 100, score_list.size() - 1)
+
+		for i in range(start, end + 1):
+			var tag := ""
+			if i == my_index:
+				tag = " <YOU>"
+
+			nearbyscores.text += "#%d  %s  %d  %s\n" % [i + 1, score_list[i].uid, score_list[i].score, tag]
+
+func submit_score(player_name: String, score: int) -> void:
+	await get_tree().process_frame
+	last_request_type = "submit"
+	var url := "%s/scores/%s.json" % [
+		FirebaseConfig.FIREBASE_DB_URL.trim_suffix("/"),
+		user_id
+	]
+	print(url)
+
+	var payload := {
+		"name": player_name,
+		"score": score,
+		"timestamp": Time.get_unix_time_from_system()
+	}
+
+	var body := JSON.stringify(payload)
+
+	http.request(
+		url,
+		["Content-Type: application/json"],
+		HTTPClient.METHOD_PUT,
+		body
+	)
+
+#获取排行榜（Top N）
+func fetch_top_scores(limit: int = 10) -> void:
+	last_request_type = "fetch"
+	await get_tree().process_frame
+	var url := "%s/scores.json?orderBy=\"score\"&limitToLast=%d" % [
+		FirebaseConfig.FIREBASE_DB_URL,
+		limit
+	]
+
+	http.request(url)
+	
+# =========================
+# 3️⃣ 统一接收返回
+# =========================
+func _on_request_completed(
+	result: int,
+	response_code: int,
+	headers: PackedStringArray,
+	body: PackedByteArray
+) -> void:
+	await get_tree().process_frame
+	if response_code != 200:
+		push_error("HTTP Error: %s" % response_code)
+		return
+
+	#数据库数据
+	var text := body.get_string_from_utf8()
+	print("got data = "+text)
+	if text.is_empty():
+		return
+
+	var parsed: Variant = JSON.parse_string(text)
+
+	if last_request_type == "submit":
+		fetch_top_scores(10)
+	else:
+		if parsed is Dictionary:
+			_process_leaderboard(parsed)
+		else:
+			push_error("Unexpected JSON format")
+		print("Firebase response:", parsed)
+
+func _on_submit_score_pressed():
+	submit_score(user_id, Global.score)
+
+func _on_main_menu_pressed():
+	pass # Replace with function body.
+
+func _on_try_again_pressed():
+	pass # Replace with function body.

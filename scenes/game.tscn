@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://scrnpvyrf17w"]
+[gd_scene load_steps=12 format=3 uid="uid://scrnpvyrf17w"]
 
 [ext_resource type="Script" uid="uid://qpm7lw1wfmeo" path="res://scripts/game.gd" id="1_lbhrr"]
 [ext_resource type="Script" uid="uid://bbg8h223rwjbd" path="res://scripts/missle_spawner.gd" id="2_iywne"]
 [ext_resource type="Script" uid="uid://iupulego5pe2" path="res://scripts/difficulty_manager.gd" id="3_p57ef"]
 [ext_resource type="PackedScene" uid="uid://glo36s8jh80q" path="res://scenes/missile.tscn" id="3_u5sy4"]
+[ext_resource type="PackedScene" uid="uid://cvo548cxn6dtf" path="res://scenes/score_board.tscn" id="4_gee14"]
 [ext_resource type="PackedScene" uid="uid://bvml5oxe7xt1h" path="res://scenes/player.tscn" id="5_iywne"]
 [ext_resource type="Texture2D" uid="uid://8d4runyh23r5" path="res://assets/map/DarkCastleGrid.png" id="6_p57ef"]
 [ext_resource type="Texture2D" uid="uid://bevwn8if6g2gy" path="res://assets/map/Terrain (32x32).png" id="8_gee14"]
@@ -455,6 +456,7 @@ position = Vector2(571, 555)
 
 [node name="MissleSpawner" type="Node" parent="."]
 script = ExtResource("2_iywne")
+score_scene = ExtResource("4_gee14")
 missile_scene = ExtResource("3_u5sy4")
 
 [node name="DifficultyManager" type="Node" parent="."]

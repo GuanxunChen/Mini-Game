@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://cvo548cxn6dtf"]
 
 [ext_resource type="Script" uid="uid://c61bj3gga3qd1" path="res://scripts/score_board.gd" id="1_ek31y"]
+[ext_resource type="PackedScene" uid="uid://bkyjxjlwtv4f6" path="res://scenes/scoreboardrow.tscn" id="2_gjtyh"]
 
 [node name="ScoreBoard" type="Node2D" unique_id=619514057]
 script = ExtResource("1_ek31y")
+row_scene = ExtResource("2_gjtyh")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=461366480]
 
@@ -37,6 +39,7 @@ layout_mode = 2
 
 [node name="Top3" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container" unique_id=1361470094]
 layout_mode = 2
+text = "Top 3:"
 horizontal_alignment = 1
 
 [node name="Number1" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container" unique_id=1188171356]
@@ -60,7 +63,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="NearbyScoresTag" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer" unique_id=416521458]
+[node name="NearbyScores" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer" unique_id=416521458]
 layout_mode = 2
 text = "Your Ranking:"
 horizontal_alignment = 1
@@ -73,10 +76,6 @@ metadata/_edit_use_anchors_ = true
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer" unique_id=1173572305]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="NearbyScores" type="Label" parent="CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1391367097]
-layout_mode = 2
-horizontal_alignment = 1
 
 [node name="try_again" type="Button" parent="CanvasLayer" unique_id=630058180]
 offset_left = 20.0
