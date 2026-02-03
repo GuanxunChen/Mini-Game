@@ -2,6 +2,7 @@ extends Node2D
 
 @export var row_scene: PackedScene
 
+@onready var name_popup = $CanvasLayer/NamePopUp
 @onready var top_3_container = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container
 @onready var scroll_container = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer
 
@@ -16,11 +17,18 @@ var score_list := []
 const FirebaseConfig = preload("res://addons/firebase/config.gd")
 
 #临时写死的用户ID
-var user_id := "test_user_003"
+var user_id := Global.player_id
 
 func _ready():
+	name_popup.name_confirmed.connect(_on_name_confirmed)
 	http.request_completed.connect(_on_request_completed)
-	fetch_top_scores(10)
+	fetch_top_scores()
+
+func _on_name_confirmed(player_name: String):
+	Global.player_name = player_name
+	Global.save_game_data()
+	#print("Name confirmed:", player_name)
+	submit_score()
 
 func _process_leaderboard(raw: Dictionary) -> void:		
 	#dictionary数据转array
@@ -31,9 +39,12 @@ func _process_leaderboard(raw: Dictionary) -> void:
 		if e is Dictionary and e.has("score"):
 			score_list.append({
 				"uid": uid,
+				"name": e.name,
 				"score": int(e.score),
 				"ts": int(e.get("timestamp", 0))
 			})
+	print("score_list: ")
+	print(score_list)
 	
 	#分数降序，同分时间早
 	score_list.sort_custom(func(a, b):
@@ -45,7 +56,7 @@ func _process_leaderboard(raw: Dictionary) -> void:
 	#找自己排名
 	var my_index := -1
 	for i in score_list.size():
-		if score_list[i].uid == user_id:
+		if score_list[i].uid == Global.player_id:
 			my_index = i
 			break
 
@@ -54,7 +65,7 @@ func _process_leaderboard(raw: Dictionary) -> void:
 	top3.text = "====== TOP 3 ======\n"
 	for i in range(min(3, score_list.size())):
 		var rank_col := ("#%d" % (i + 1)).rpad(9, " ")
-		var name_col := str(score_list[i]["uid"]).substr(0, 16).rpad(16, " ")
+		var name_col := str(score_list[i]["name"]).substr(0, 16).rpad(16, " ")
 		var score_col := str(score_list[i]["score"]).lpad(5, " ")
 		top3.text+=rank_col+name_col+score_col+"\n"
 
@@ -72,20 +83,27 @@ func _process_leaderboard(raw: Dictionary) -> void:
 			if i == my_index:
 				tag = " <YOU>"
 
-			nearbyscores.text += "#%d  %s  %d  %s\n" % [i + 1, score_list[i].uid, score_list[i].score, tag]
+			nearbyscores.text += "#%d  %s  %d  %s\n" % [i + 1, score_list[i].name, score_list[i].score, tag]
 
-func submit_score(player_name: String, score: int) -> void:
+func submit_score():
+	if Global.player_name == "":
+		name_popup.show()
+		return 
+	if Global.highscore == 0:
+		print("not on board getting 0")
+		return
+	
 	await get_tree().process_frame
 	last_request_type = "submit"
 	var url := "%s/scores/%s.json" % [
 		FirebaseConfig.FIREBASE_DB_URL.trim_suffix("/"),
-		user_id
+		Global.player_id
 	]
 	print(url)
 
 	var payload := {
-		"name": player_name,
-		"score": score,
+		"name": Global.player_name,
+		"score": Global.highscore,
 		"timestamp": Time.get_unix_time_from_system()
 	}
 
@@ -99,7 +117,7 @@ func submit_score(player_name: String, score: int) -> void:
 	)
 
 #获取排行榜（Top N）
-func fetch_top_scores(limit: int = 10) -> void:
+func fetch_top_scores(limit: int = 100000) -> void:
 	last_request_type = "fetch"
 	await get_tree().process_frame
 	var url := "%s/scores.json?orderBy=\"score\"&limitToLast=%d" % [
@@ -132,7 +150,7 @@ func _on_request_completed(
 	var parsed: Variant = JSON.parse_string(text)
 
 	if last_request_type == "submit":
-		fetch_top_scores(10)
+		fetch_top_scores()
 	else:
 		if parsed is Dictionary:
 			_process_leaderboard(parsed)
@@ -141,7 +159,8 @@ func _on_request_completed(
 		print("Firebase response:", parsed)
 
 func _on_submit_score_pressed():
-	submit_score(user_id, Global.score)
+	submit_score()
+	Global.save_game_data()
 
 func _on_main_menu_pressed():
 	pass # Replace with function body.

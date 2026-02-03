@@ -39,12 +39,15 @@ func spawn_missile():
 	missile.connect("exploded", Callable(self, "_on_missile_exploded"))
 
 func _on_missile_destroyed(_missile):
-	Global.score += 1
+	Global.current_score += 1
 	if score_label:
-		score_label.text = "Score: " + str(Global.score)
-	print("Missile destroyed! Score: ", Global.score)
+		score_label.text = "Score: " + str(Global.current_score)
+	print("Missile destroyed! Score: ", Global.current_score)
 
 func _on_missile_exploded(_missile):
 	print("Missile exploded! Game Over!")
+	if Global.current_score > Global.highscore:
+		Global.highscore = Global.current_score
+	Global.save_game_data()
 	get_tree().change_scene_to_packed(score_scene)
 	# TODO: 添加 Game Over 逻辑，例如切换场景、弹出面板

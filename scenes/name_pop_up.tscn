@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://cv6m44e3ttnig"]
+
+[ext_resource type="Script" uid="uid://cfayj53kuc2vv" path="res://scripts/name_popup_panel.gd" id="1_pjydb"]
+
+[node name="NamePopupPanel" type="PopupPanel" unique_id=391853442]
+oversampling_override = 1.0
+size = Vector2i(1000, 500)
+visible = true
+script = ExtResource("1_pjydb")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=591048940]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 996.0
+offset_bottom = 496.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=41528761]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=47674559]
+layout_mode = 2
+text = "Make A Name"
+
+[node name="NameInput" type="LineEdit" parent="PanelContainer/VBoxContainer" unique_id=697486186]
+layout_mode = 2
+placeholder_text = "Click Here to enter name"
+
+[node name="ButtonRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=1356714017]
+layout_mode = 2
+
+[node name="RandomizeButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=26944815]
+layout_mode = 2
+text = "Random"
+
+[node name="ConfirmButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=207561057]
+layout_mode = 2
+text = "Cnofirm"
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonRow/RandomizeButton" to="." method="_on_random_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonRow/ConfirmButton" to="." method="_on_confirm_pressed"]

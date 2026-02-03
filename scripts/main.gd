@@ -2,6 +2,14 @@ extends Node2D
 @export var game_scene: PackedScene
 
 func _ready():
+	Global.load_data()
+
+	if Global.player_id == "":
+		Global.player_id = str(ResourceUID.create_id())
+		Global.save_game_data()
+		print("UID:")
+		print(Global.player_id)
+		
 	var background = $Background
 	var tex_size = background.texture.get_size()
 	var viewport_size = get_viewport_rect().size
