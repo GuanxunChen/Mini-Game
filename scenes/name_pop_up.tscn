@@ -34,7 +34,7 @@ text = "Random"
 
 [node name="ConfirmButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=207561057]
 layout_mode = 2
-text = "Cnofirm"
+text = "Confirm"
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonRow/RandomizeButton" to="." method="_on_random_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonRow/ConfirmButton" to="." method="_on_confirm_pressed"]

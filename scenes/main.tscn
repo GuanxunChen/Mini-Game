@@ -1,51 +1,6 @@
 [gd_scene format=3 uid="uid://b2ixohbcflmm0"]
 
-[ext_resource type="Script" uid="uid://bhavw35ohnwov" path="res://scripts/main.gd" id="1_o5qli"]
-[ext_resource type="PackedScene" uid="uid://scrnpvyrf17w" path="res://scenes/game.tscn" id="2_0wfyh"]
-[ext_resource type="Texture2D" uid="uid://bnemm6xsy4ym3" path="res://assets/image/Gemini_Generated_Image_rhkwmprhkwmprhkw.png" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://d3o6daxuwcynb" path="res://scripts/main.gd" id="1_o5qli"]
 
 [node name="Main" type="Node2D" unique_id=1949352006]
 script = ExtResource("1_o5qli")
-game_scene = ExtResource("2_0wfyh")
-
-[node name="Background" type="Sprite2D" parent="." unique_id=1623881256]
-texture = ExtResource("3_sugp2")
-centered = false
-
-[node name="Start" type="Button" parent="." unique_id=1710199796]
-offset_right = 96.0
-offset_bottom = 31.0
-text = "Start Game"
-
-[node name="Score" type="Button" parent="." unique_id=1263851072]
-visible = false
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="Customize" type="Button" parent="." unique_id=721946874]
-visible = false
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="Shop" type="Button" parent="." unique_id=1389340821]
-visible = false
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="Setting" type="Button" parent="." unique_id=570509974]
-visible = false
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="Quit" type="Button" parent="." unique_id=1818483178]
-offset_top = 43.0
-offset_right = 42.0
-offset_bottom = 74.0
-text = "Quit"
-
-[connection signal="pressed" from="Start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="Score" to="." method="_on_score_pressed"]
-[connection signal="pressed" from="Customize" to="." method="_on_customize_pressed"]
-[connection signal="pressed" from="Shop" to="." method="_on_shop_pressed"]
-[connection signal="pressed" from="Setting" to="." method="_on_setting_pressed"]
-[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]

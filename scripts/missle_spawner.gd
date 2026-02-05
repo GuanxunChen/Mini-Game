@@ -1,5 +1,8 @@
 extends Node
-@export var score_scene: PackedScene
+
+#@export var score_scene: PackedScene#改为释放信号
+signal game_over
+
 @export var missile_scene: PackedScene
 @export var spawn_interval: float = 1.0        # 导弹生成间隔（秒）
 @export var spawn_x_min: int = 400
@@ -48,6 +51,8 @@ func _on_missile_exploded(_missile):
 	print("Missile exploded! Game Over!")
 	if Global.current_score > Global.highscore:
 		Global.highscore = Global.current_score
+	Global.current_score = 0
 	Global.save_game_data()
-	get_tree().change_scene_to_packed(score_scene)
+	emit_signal("game_over")
+#	get_tree().change_scene_to_packed(score_scene)
 	# TODO: 添加 Game Over 逻辑，例如切换场景、弹出面板

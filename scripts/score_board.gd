@@ -1,6 +1,7 @@
 extends Node2D
 
-@export var row_scene: PackedScene
+signal retry_request
+signal main_menu
 
 @onready var name_popup = $CanvasLayer/NamePopUp
 @onready var top_3_container = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/Top3Container
@@ -163,7 +164,7 @@ func _on_submit_score_pressed():
 	Global.save_game_data()
 
 func _on_main_menu_pressed():
-	pass # Replace with function body.
+	emit_signal("main_menu")
 
 func _on_try_again_pressed():
-	pass # Replace with function body.
+	emit_signal("retry_request")
