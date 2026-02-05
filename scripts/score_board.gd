@@ -13,6 +13,7 @@ signal main_menu
 const WINDOW_SIZE := 25
 var last_request_type := ""
 var score_list := []
+var player_index := -1
 
 # 引入 Firebase 配置
 const FirebaseConfig = preload("res://addons/firebase/config.gd")
@@ -55,10 +56,9 @@ func _process_leaderboard(raw: Dictionary) -> void:
 	)
 
 	#找自己排名
-	var my_index := -1
 	for i in score_list.size():
 		if score_list[i].uid == Global.player_id:
-			my_index = i
+			player_index = i
 			break
 
 	#构造显示文本
@@ -71,17 +71,17 @@ func _process_leaderboard(raw: Dictionary) -> void:
 		top3.text+=rank_col+name_col+score_col+"\n"
 
 	var nearbyscores = $CanvasLayer/Control/PanelContainer/VBoxContainer/score_container/VBoxContainer/ScrollContainer/VBoxContainer/NearbyScores
-	if my_index == -1:
+	if player_index == -1:
 		nearbyscores.text =("Player not ranked yet\n")
 	else:
 		nearbyscores.text =("====== AROUND YOU ======\n")
 
-		var start = max(my_index - 100, 0)
-		var end = min(my_index + 100, score_list.size() - 1)
+		var start = max(player_index - 100, 0)
+		var end = min(player_index + 100, score_list.size() - 1)
 
 		for i in range(start, end + 1):
 			var tag := ""
-			if i == my_index:
+			if i == player_index:
 				tag = " <YOU>"
 
 			nearbyscores.text += "#%d  %s  %d  %s\n" % [i + 1, score_list[i].name, score_list[i].score, tag]
@@ -92,6 +92,10 @@ func submit_score():
 		return 
 	if Global.highscore == 0:
 		print("not on board getting 0")
+		return
+	
+	if score_list[player_index].score > Global.highscore:
+		print("Warning: Detect local highscore lower than online record, player data was changed manually")
 		return
 	
 	await get_tree().process_frame
