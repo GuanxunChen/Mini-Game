@@ -168,7 +168,7 @@ func _on_submit_score_pressed():
 	Global.save_game_data()
 
 func _on_main_menu_pressed():
-	emit_signal("main_menu")
+	emit_signal("main_menu")#在main里面接收
 
 func _on_try_again_pressed():
-	emit_signal("retry_request")
+	emit_signal("retry_request")#在main里面接收

@@ -30,7 +30,7 @@ func _on_quit_pressed():
 #-------------------------------------------------------------------------------
 
 func _on_start_pressed():
-	emit_signal("start_game")
+	emit_signal("start_game")#在main里接收
 	
 func _on_score_pressed():
 	pass # Replace with function body.

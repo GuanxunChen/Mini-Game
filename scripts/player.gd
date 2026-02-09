@@ -15,8 +15,8 @@ var charging := false
 var charge_start := Vector2.ZERO
 
 enum GAME_MODE{Campaign, Timed}
-var game_mode := GAME_MODE.Timed
 @export var max_air_jump := 2
+var game_mode := GAME_MODE.Timed
 var current_air_jump := max_air_jump
 
 var timer := 0.0

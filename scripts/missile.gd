@@ -3,8 +3,8 @@ extends Area2D
 signal destroyed(missile)
 signal exploded(missile)
 
-@export var grow_speed := 0.4*3        # 导弹放大速度
-@export var destroy_timeout := 5.0   # 可击破后倒计时秒数
+@export var grow_speed := 0.3        # 导弹放大速度default
+@export var destroy_timeout := 5.0   # 可击破后倒计时秒数default
 
 var active := false                   # 是否进入可击破状态
 var active_timer := 0.0               # 可击破倒计时
@@ -21,7 +21,7 @@ func _ready():
 		return
 	
 	# 初始化导弹
-	set_red_circle_size()
+	set_red_circle_size(1.5)
 	missile_sprite.scale = Vector2.ZERO
 	monitoring = true
 	monitorable = true
@@ -37,6 +37,9 @@ func _ready():
 #	print(red_circle.scale.x)
 	# 连接 Area2D 碰撞信号
 	connect("body_entered", Callable(self, "_on_body_entered"))
+	
+	#print("grow_speed:"+str(grow_speed))
+	#print("destroy_timeout:"+str(destroy_timeout))
 
 func _process(delta):
 	if not active:
@@ -59,12 +62,12 @@ func check_enter_active_state():
 	if red_radius <= missile_radius:#/2是因为原图只占据了64像素的一部分
 		enter_active_state()
 		
-func set_red_circle_size():
+func set_red_circle_size(ratio):
 	var viewport_width = get_viewport_rect().size.x
 #	print("viewport:")
 #	print(viewport_width)
 	
-	var target_radius = viewport_width / 15.0
+	var target_radius = viewport_width / 15.0 * ratio
 #	print("target_radius:")
 #	print(target_radius)
 
@@ -88,16 +91,25 @@ func enter_active_state():
 	active_timer = 0.0
 	#print("Missile ACTIVE (can be destroyed)")
 
-func _on_body_entered(body):
+func _on_body_entered(body):#从missle spawner应用
 	if active and body.is_in_group("player"):
 		print("Missile hit player!")  # 调试用
 		destroy()
 
+func apply_difficulty(data: Dictionary) -> void:#从missle spawner应用
+	if data.has("grow_speed"):
+		grow_speed = data["grow_speed"]
+
+	if data.has("destroy_timeout"):
+		destroy_timeout = data["destroy_timeout"]
+	
+	#print("grow_speed1:"+str(grow_speed))
+	#print("destroy_timeout1:"+str(destroy_timeout))
+
 func destroy():
-	emit_signal("destroyed", self)
+	emit_signal("destroyed", self)#在missle spawner接收
 	queue_free()
 
 func explode():
-	emit_signal("exploded", self)
+	emit_signal("exploded", self)#在missle spawner接收
 	queue_free()
-	#get_tree().change_scene_to_file("res://scenes/scoreboard.tscn")
